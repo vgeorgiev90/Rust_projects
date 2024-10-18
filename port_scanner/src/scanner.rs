@@ -2,7 +2,7 @@ use std::net::{TcpStream, Ipv4Addr, ToSocketAddrs};
 use std::process;
 use std::time::Duration;
 
-const TIMEOUT: Duration = Duration::from_millis(100);
+const TIMEOUT: Duration = Duration::from_millis(500);
 
 pub fn scan_tcp_ports(previous: u32, current: u32, host: &str) -> Vec<u32> {
 

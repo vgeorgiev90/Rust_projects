@@ -77,13 +77,19 @@ fn main() {
         handles.push(handle);
     }
 
+    drop(sender);
+
+    //Get all messages in the channel
+    while let Ok(data) = receiver.recv() {
+        opened_ports.push(data);
+    };
+
     //Wait for thread completion
     for hand in handles {
         hand.join().expect("[!] Thread panicked...");
     }
 
-    //Get all messages in the channel
-    receiver.try_iter().for_each(|msg| opened_ports.push(msg));
+    //receiver.try_iter().for_each(|msg| opened_ports.push(msg));
 
     let duration = start.elapsed();
     
