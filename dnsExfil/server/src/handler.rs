@@ -32,8 +32,8 @@ pub fn dns_handler(question: &DnsQuestion) -> Vec<DnsRecord> {
                     println!("\n{}\n", String::from_utf8(decoded).unwrap());
                     print!("#> ");
                     io::stdout().flush().expect("[!] Could not flush stdout");
-                    EXFILTRATED_DATA = Vec::new();
                 }
+                EXFILTRATED_DATA.clear();
             }
 
             let record = DnsRecord::A(question.name.clone(), utils::generate_ip());

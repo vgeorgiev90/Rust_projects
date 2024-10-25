@@ -65,9 +65,7 @@ pub fn parse_data(requested_domain: String) -> String {
 
     // Revert any changes the client made to the base64 special chars
     let joined: String = temp.join("")
-                        .replace("-1", "/")
-                        .replace("--", "+")
-                        .replace("-0", "=");
+                        .replace("--7", "_");
 
     return joined;
 }

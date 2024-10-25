@@ -1,6 +1,6 @@
 [package]
 name = "server"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
@@ -8,7 +8,7 @@ argparse = "0.2.2"
 dns-server = "0.2.4"
 signal-hook = "0.3.17"
 permit = "0.2.1"
-base64 = "0.21"
+base64 = "0.22.1"
 rustyline = "14.0.0"
 rand = "0.8.5"
 aes-gcm = "0.10.3"
