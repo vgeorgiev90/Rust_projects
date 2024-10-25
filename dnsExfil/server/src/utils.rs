@@ -25,6 +25,7 @@ pub fn get_input() {
                     println!("\treconfigure_sleep INT -> Reconfigure the client's sleep interval, default is 5 secs");
                     println!("\texit -> Terminates the DNS Server process, this wont terminate the client, it will keep polling every SLEEP secs");
                     println!("\tkill_agent -> Instructs the dns client to terminate its process");
+                    println!("\treconfigure_dnsaddr ADDR -> Reconfigure the client's dns server connection string");
                     continue;
                 } else if temp.is_empty() {
                     continue;

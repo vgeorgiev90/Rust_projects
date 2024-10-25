@@ -9,7 +9,7 @@ use argparse::{ArgumentParser, Store};
 /*
 TODO
 1. Maybe add the ability to download/upload files
-2. Add the ability to reconfigure client's DNS server address trough a command
+2. Add a flag for the encryption key
 */
 
 //Encryption key
