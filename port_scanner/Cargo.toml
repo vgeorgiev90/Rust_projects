@@ -1,9 +1,12 @@
 [package]
 name = "port_scanner"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 
 [dependencies]
+tokio = { version = "1.0", features = ["full"] }
 argparse = "0.2.2"
 colored = "2.0"
 ipnetwork = "0.20.0"
+surge-ping = "0.8.1"
+rand = "0.8.5"
