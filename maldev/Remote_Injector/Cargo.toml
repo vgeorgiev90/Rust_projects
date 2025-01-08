@@ -3,4 +3,10 @@ name = "Remote_Injector"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+lto = "thin"       ## Link time optimization
+opt-level = "z"    ## Code optimization for size
+strip = true
+
 [dependencies]
+reqwest = { version = "0.12.9", features = ["blocking"] }
