@@ -38,6 +38,7 @@ fn main() {
 
     let top_permit = Permit::new();
     let permit = top_permit.new_sub();
+    // Only under linux
     std::thread::spawn(move || {
         Signals::new([SIGHUP, SIGINT, SIGQUIT, SIGTERM])
             .unwrap()
@@ -45,14 +46,15 @@ fn main() {
             .next();
         drop(top_permit);
     });
-
+    //
+    
     std::thread::spawn(move || {
         utils::get_input();
     });
 
     println!("[+] Starting dns server on port {}", port);
     let udp_socket = std::net::UdpSocket::bind(("0.0.0.0", port)).expect("Cound not bind to 0.0.0.0:53");
-    dns_server::Builder::new_port(udp_socket)
+    dns_server::Builder::new(udp_socket)
         .with_permit(permit)
         .serve(&handler::dns_handler)
         .unwrap();
